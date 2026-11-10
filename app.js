@@ -7,6 +7,7 @@ const refreshButton = document.querySelector('#refresh-button');
 const formMessage = document.querySelector('#form-message');
 const listMessage = document.querySelector('#list-message');
 const list = document.querySelector('#request-list');
+const REPAIR_TABLE = 'repair_requests';
 let client;
 let submitting = false;
 
@@ -44,7 +45,7 @@ async function loadRequests() {
   list.setAttribute('aria-busy', 'true');
   showMessage(listMessage, '正在載入報修紀錄…');
   try {
-    const { data, error } = await client.from('repair_requests')
+    const { data, error } = await client.from(REPAIR_TABLE)
       .select('id,reporter_name,location,category,description,urgency,status,created_at')
       .order('created_at', { ascending: false }).order('id', { ascending: false }).limit(20);
     if (error) throw error;
@@ -73,7 +74,7 @@ form.addEventListener('submit', async (event) => {
   showMessage(formMessage, '');
   try {
     // status 與 created_at 由資料庫預設值產生，不隨表單送出。
-    const { error } = await client.from('repair_request').insert(payload);
+    const { error } = await client.from(REPAIR_TABLE).insert(payload);
     if (error) throw error;
     form.reset();
     showMessage(formMessage, '報修已成功登記！', 'success');
