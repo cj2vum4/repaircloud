@@ -73,7 +73,7 @@ form.addEventListener('submit', async (event) => {
   showMessage(formMessage, '');
   try {
     // status 與 created_at 由資料庫預設值產生，不隨表單送出。
-    const { error } = await client.from('repair_requests').insert(payload);
+    const { error } = await client.from('repair_request').insert(payload);
     if (error) throw error;
     form.reset();
     showMessage(formMessage, '報修已成功登記！', 'success');
