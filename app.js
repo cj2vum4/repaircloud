@@ -36,7 +36,20 @@ function renderRequest(request) {
   const time = textElement('time', Number.isNaN(date.getTime()) ? '時間未提供' : date.toLocaleString('zh-TW', { hour12: false }));
   if (!Number.isNaN(date.getTime())) time.dateTime = date.toISOString();
   meta.append(textElement('span', `報修人：${request.reporter_name}`), textElement('span', request.category), textElement('span', `狀態：${request.status || '待處理'}`), time);
-  article.append(meta);
+  meta.append(textElement('span', `負責人：${request.assignee || '未指定'}`));
+  const photo = textElement('p', '照片網址：');
+  let photoUrl;
+  try { photoUrl = new URL(request.photo_url); } catch { /* 舊資料可沒有照片網址。 */ }
+  if (photoUrl && ['http:', 'https:'].includes(photoUrl.protocol)) {
+    const link = textElement('a', request.photo_url);
+    link.href = photoUrl.href;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    photo.append(link);
+  } else {
+    photo.append(textElement('span', request.photo_url || '未提供'));
+  }
+  article.append(meta, photo);
   return article;
 }
 
@@ -46,7 +59,7 @@ async function loadRequests() {
   showMessage(listMessage, '正在載入報修紀錄…');
   try {
     const { data, error } = await client.from(REPAIR_TABLE)
-      .select('id,reporter_name,location,category,description,urgency,status,created_at')
+      .select('id,reporter_name,location,category,description,assignee,photo_url,urgency,status,created_at')
       .order('created_at', { ascending: false }).order('id', { ascending: false }).limit(20);
     if (error) throw error;
     list.replaceChildren(...data.map(renderRequest));
@@ -63,11 +76,17 @@ form.addEventListener('submit', async (event) => {
   event.preventDefault();
   if (submitting || !client || !form.reportValidity()) return;
   const values = new FormData(form);
-  const payload = Object.fromEntries(['reporter_name', 'location', 'category', 'description', 'urgency'].map(key => [key, String(values.get(key) || '').trim()]));
+  const payload = Object.fromEntries(['reporter_name', 'location', 'category', 'description', 'urgency', 'assignee'].map(key => [key, String(values.get(key) || '').trim()]));
   if (Object.values(payload).some(value => !value)) {
-    showMessage(formMessage, '請填寫所有欄位，內容不可只有空白。', 'error');
+    showMessage(formMessage, '請填寫所有必填欄位，內容不可只有空白。', 'error');
     return;
   }
+  const photoUrl = String(values.get('photo_url') || '').trim();
+  if (photoUrl && !/^https?:\/\//i.test(photoUrl)) {
+    showMessage(formMessage, '照片網址請使用 http:// 或 https://。', 'error');
+    return;
+  }
+  payload.photo_url = photoUrl || null;
   submitting = true;
   fields.disabled = true;
   submitButton.textContent = '正在送出…';
