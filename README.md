@@ -29,3 +29,5 @@ SELECT count(*) FROM public.repair_requests;
 - 離線瀏覽器回歸測試：`node tests/assignee-photo.cjs`，以模擬 Supabase 驗證表單、清單與舊資料相容性，不連線正式資料庫。原本的 live 測試需要先套用 002，且會新增一筆虛構資料，請只在測試環境執行。
 
 [報修系統操作說明（Word）](文件/報修系統操作說明.docx)
+
+[報修登記系統提案（PowerPoint，6 頁）](文件/報修登記系統提案.pptx)
