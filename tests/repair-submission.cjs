@@ -41,6 +41,7 @@ const { chromium } = require('playwright');
     assert.equal(await page.locator('#list-message').evaluate(el => el.classList.contains('error')), false, await page.locator('#list-message').textContent());
     const description = `虛構手機報修驗證 ${Date.now()}`;
     await page.locator('[name=reporter_name]').fill('測試小明（虛構）');
+    await page.locator('[name=assignee]').fill('測試小華（虛構）');
     await page.locator('[name=location]').fill('示範測試室（虛構）');
     await page.locator('[name=category]').selectOption('設備');
     await page.locator('[name=description]').fill(description);

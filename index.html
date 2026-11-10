@@ -14,7 +14,7 @@
   <header class="hero"><div class="wrap"><p class="eyebrow">REPAIR DESK · 報修服務</p><h1>讓問題被看見，<br>讓修復開始。</h1><p>填寫問題與發生地點，留下清楚的報修紀錄。</p></div></header>
   <main class="wrap">
     <section class="panel" aria-labelledby="form-title">
-      <div class="section-heading"><span class="step">01</span><div><h2 id="form-title">新增報修</h2><p>所有欄位皆必填；登記時間由系統自動產生。</p></div></div>
+      <div class="section-heading"><span class="step">01</span><div><h2 id="form-title">新增報修</h2><p>照片網址可不填，其餘欄位必填；登記時間由系統自動產生。</p></div></div>
       <form id="repair-form">
         <fieldset id="form-fields">
           <div class="grid">
@@ -22,6 +22,8 @@
             <label>地點或部門<input name="location" required maxlength="200" placeholder="例如：三樓會議室"></label>
             <label>類別<select name="category" required><option value="">請選擇類別</option><option>設備</option><option>網路</option><option>環境</option><option>其他</option></select></label>
             <label>緊急程度<select name="urgency" required><option>低</option><option selected>中</option><option>高</option></select></label>
+            <label>負責人<input name="assignee" required maxlength="100" placeholder="請輸入負責人姓名"></label>
+            <label>照片網址（選填）<input name="photo_url" type="url" maxlength="2048" pattern="https?://.+" placeholder="https://example.com/photo.jpg" aria-describedby="photo-help"><small id="photo-help">請使用 http:// 或 https:// 網址。</small></label>
           </div>
           <label class="description">問題說明<textarea name="description" required maxlength="5000" rows="5" placeholder="請描述發生的問題、時間，以及目前的狀況。"></textarea></label>
           <div class="form-bottom"><p>請勿填寫密碼或其他敏感資訊。</p><button id="submit-button" type="submit">送出報修 <span aria-hidden="true">↗</span></button></div>
